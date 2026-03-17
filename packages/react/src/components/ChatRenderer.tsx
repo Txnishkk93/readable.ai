@@ -1,6 +1,4 @@
-import React from 'react';
-import type { ParsedResponse } from '@readable-ai/core';
-import { useTheme } from '../hooks/useTheme';
+import React from 'react'; import { useTheme } from '../hooks/useTheme';
 import type { RendererProps } from './types';
 
 export const ChatRenderer: React.FC<RendererProps> = ({ response, theme = 'dark', overrides = {} }) => {
@@ -52,56 +50,57 @@ export const ChatRenderer: React.FC<RendererProps> = ({ response, theme = 'dark'
     } as React.CSSProperties,
   };
 
-  const allItems = [
+
+   const allItems = [
     ...response.metrics.map((m) => ({ type: 'metric' as const, data: m })),
     ...response.insights.map((i) => ({ type: 'insight' as const, data: i })),
     ...response.actions.map((a) => ({ type: 'action' as const, data: a })),
+    ...response.unparsed.map((u) => ({ type: 'unparsed' as const, data: u })),
   ];
+
+  const renderItem = (item: typeof allItems[0], idx: number) => {
+    switch (item.type) {
+      case 'metric': {
+        const m = item.data;
+        return (
+          <div key={`metric-${idx}`} style={{ ...styles.bubble, ...styles.metricBubble }}>
+            <div style={styles.metricValue}>
+              {m.value}
+              {m.unit && <span>&nbsp;{m.unit}</span>}
+            </div>
+            <div style={styles.metricLabel}>{m.label}</div>
+          </div>
+        );
+      }
+      case 'insight':
+        return (
+          <div key={`insight-${idx}`} style={{ ...styles.bubble, ...styles.assistantBubble }}>
+            {item.data.text}
+          </div>
+        );
+      case 'action': {
+        const a = item.data;
+        return (
+          <div key={`action-${idx}`} style={{ ...styles.bubble, ...styles.actionBubble }}>
+            {a.priority && <strong>[{a.priority.toUpperCase()}]</strong>} {a.text}
+          </div>
+        );
+      }
+      case 'unparsed':
+        return (
+          <div key={`unparsed-${idx}`} style={{ ...styles.bubble, ...styles.assistantBubble }}>
+            {item.data}
+          </div>
+        );
+    }
+  };
 
   return (
     <div style={styles.container}>
-      {response.metrics.length > 0 && (
-        <>
-          {response.metrics.map((metric, idx) => (
-            <div key={`metric-${idx}`} style={{ ...styles.bubble, ...styles.metricBubble }}>
-              <div style={styles.metricValue}>
-                {metric.value}
-                {metric.unit && <span>{metric.unit}</span>}
-              </div>
-              <div style={styles.metricLabel}>{metric.label}</div>
-            </div>
-          ))}
-        </>
-      )}
-
-      {response.insights.length > 0 && (
-        <>
-          {response.insights.map((insight, idx) => (
-            <div key={`insight-${idx}`} style={{ ...styles.bubble, ...styles.assistantBubble }}>
-              {insight.text}
-            </div>
-          ))}
-        </>
-      )}
-
-      {response.actions.length > 0 && (
-        <>
-          {response.actions.map((action, idx) => (
-            <div key={`action-${idx}`} style={{ ...styles.bubble, ...styles.actionBubble }}>
-              {action.priority && <strong>[{action.priority.toUpperCase()}]</strong>} {action.text}
-            </div>
-          ))}
-        </>
-      )}
-
-      {response.unparsed.length > 0 && (
-        <>
-          {response.unparsed.map((text, idx) => (
-            <div key={`unparsed-${idx}`} style={{ ...styles.bubble, ...styles.assistantBubble }}>
-              {text}
-            </div>
-          ))}
-        </>
+      {allItems.length === 0 ? (
+        <div style={{ color: tokens.text_secondary }}>No content available</div>
+      ) : (
+        allItems.map((item, idx) => renderItem(item, idx))
       )}
     </div>
   );

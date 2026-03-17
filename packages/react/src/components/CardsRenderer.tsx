@@ -1,5 +1,4 @@
 import React from 'react';
-import type { ParsedResponse } from '@readable-ai/core';
 import { useTheme } from '../hooks/useTheme';
 import type { RendererProps } from './types';
 

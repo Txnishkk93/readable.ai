@@ -3,7 +3,8 @@
   "version": "0.1.0-alpha",
   "description": "React component library for rendering parsed LLM responses",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -11,12 +12,13 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --external react --external react-dom",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch --external react --external react-dom"
   },
   "dependencies": {
     "@readable-ai/core": "workspace:*"
@@ -31,6 +33,7 @@
     "@types/react-dom": "^19.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "tsup": "^8.0.0",
     "typescript": "5.7.3"
   }
 }

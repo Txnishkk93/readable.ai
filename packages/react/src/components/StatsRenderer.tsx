@@ -1,5 +1,4 @@
 import React from 'react';
-import type { ParsedResponse } from '@readable-ai/core';
 import { useTheme } from '../hooks/useTheme';
 import type { RendererProps } from './types';
 
@@ -16,12 +15,11 @@ export const StatsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark
       marginBottom: tokens.spacing_lg,
     } as React.CSSProperties,
     sectionTitle: {
-      fontSize: tokens.font_size_lg,
+      fontSize: tokens.font_size_sm,
       fontWeight: 600,
       marginBottom: tokens.spacing_md,
       color: tokens.text_primary,
       textTransform: 'uppercase' as const,
-      fontSize: tokens.font_size_sm,
       letterSpacing: '0.05em',
     } as React.CSSProperties,
     statRow: {
@@ -65,7 +63,6 @@ export const StatsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark
     } as React.CSSProperties,
   };
 
-  // Calculate percentage for bar chart (if numeric)
   const getBarWidth = (metric: any): number => {
     if (typeof metric.value === 'number') {
       return Math.min(100, Math.max(5, metric.value));
@@ -75,7 +72,6 @@ export const StatsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark
 
   return (
     <div style={styles.container}>
-      {/* Metrics Section */}
       {response.metrics.length > 0 && (
         <div style={styles.section}>
           <div style={styles.sectionTitle}>Key Metrics</div>
@@ -96,7 +92,6 @@ export const StatsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark
         </div>
       )}
 
-      {/* Actions Section */}
       {response.actions.length > 0 && (
         <div style={styles.section}>
           <div style={styles.sectionTitle}>Required Actions</div>
@@ -110,7 +105,6 @@ export const StatsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark
         </div>
       )}
 
-      {/* Insights Section */}
       {response.insights.length > 0 && (
         <div style={styles.section}>
           <div style={styles.sectionTitle}>Key Insights</div>

@@ -1,6 +1,4 @@
 import React from 'react';
-import { parseAIResponse } from '@readable-ai/core';
-import type { ParsedResponse } from '@readable-ai/core';
 import type { ReadableProps } from './types';
 import { CardsRenderer } from './CardsRenderer';
 import { StatsRenderer } from './StatsRenderer';
