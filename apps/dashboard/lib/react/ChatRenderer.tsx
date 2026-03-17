@@ -1,4 +1,5 @@
-import React from 'react'; import { useTheme } from '../hooks/useTheme';
+import React from 'react';
+import { useTheme, type ThemeType } from '../hooks/useTheme';
 import type { RendererProps } from './types';
 
 export const ChatRenderer: React.FC<RendererProps> = ({ response, theme = 'dark', overrides = {} }) => {
@@ -44,7 +45,7 @@ export const ChatRenderer: React.FC<RendererProps> = ({ response, theme = 'dark'
       opacity: 0.9,
     } as React.CSSProperties,
     timestamp: {
-      fontSize: tokens.font_size_xs,
+      fontSize: tokens.font_size_sm,
       opacity: 0.6,
       marginTop: tokens.spacing_sm,
     } as React.CSSProperties,
