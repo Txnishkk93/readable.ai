@@ -21,7 +21,7 @@ export default function Home() {
             <Link href="/embed">
               <Button variant="ghost">Embed</Button>
             </Link>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/Txnishkk93/readable.ai" target="_blank" rel="noopener noreferrer">
               <Button variant="outline">GitHub</Button>
             </a>
           </div>
@@ -45,7 +45,7 @@ export default function Home() {
               </Button>
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/Txnishkk93/readable.ai"
               target="_blank"
               rel="noopener noreferrer"
             >

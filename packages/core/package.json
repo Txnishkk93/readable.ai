@@ -3,25 +3,27 @@
   "version": "0.1.0-alpha",
   "description": "Parser engine for converting LLM responses into structured data",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "test": "node --test --loader tsx dist/parser.test.js",
-    "dev": "tsc --watch"
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "test": "vitest"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22",
-    "typescript": "5.7.3"
+    "tsup": "^8.0.0",
+    "typescript": "5.7.3",
+    "vitest": "^1.0.0"
   }
 }

@@ -10,7 +10,7 @@ import { tokenizeText } from './tokenizer';
 import { detectMetrics } from './metric-detector';
 import { classifyIntent } from './intent-classifier';
 
-const DEFAULT_CONFIG: ParserConfig = {
+const DEFAULT_CONFIG: Required<ParserConfig> = {
   confidenceThreshold: 0.3,
   hint: 'general',
   strict: false,
@@ -187,4 +187,4 @@ function normalizeText(text: string): string {
     .trim();
 }
 
-export { StreamingState, ParserConfig };
+export type { StreamingState, ParserConfig };
