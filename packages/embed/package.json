@@ -1,0 +1,23 @@
+{
+  "name": "@readable-ai/embed",
+  "version": "0.1.0-alpha",
+  "description": "UMD bundle for embedding Readable components via script tag",
+  "type": "module",
+  "main": "./dist/readable.umd.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch"
+  },
+  "dependencies": {
+    "@readable-ai/core": "workspace:*",
+    "@readable-ai/react": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0"
+  }
+}
