@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
-import { createStreamingState, processStreamChunk } from '@readable-ai/core';
-import type { ParsedResponse, ParserConfig, StreamingState } from '@readable-ai/core';
+import { createStreamingState, processStreamChunk } from '@/lib/core';
+import type { ParsedResponse, ParserConfig, StreamingState } from '@/lib/core';
 
 export function useStreamingReadable(config?: ParserConfig) {
   const [parsed, setParsed] = useState<ParsedResponse | null>(null);

@@ -1,6 +1,5 @@
 /**
- * @readable-ai/react
- * React components for rendering parsed LLM responses
+ * React Components for Rendering Parsed Responses
  */
 
 export { Readable } from './components/Readable';

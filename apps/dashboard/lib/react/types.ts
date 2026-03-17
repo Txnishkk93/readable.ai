@@ -1,4 +1,4 @@
-import type { ParsedResponse, ParserConfig } from '@readable-ai/core';
+import type { ParsedResponse, ParserConfig } from '@/lib/core';
 
 export type RendererType = 'cards' | 'stats' | 'chat' | 'timeline';
 

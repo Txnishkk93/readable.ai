@@ -1,11 +1,16 @@
 {
-  "name": "@readable-ai/monorepo",
+  "name": "readable-ai",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "lint": "next lint"
+    "dev": "cd apps/dashboard && pnpm dev",
+    "build": "cd apps/dashboard && pnpm build",
+    "build:docker": "docker buildx build -t readable-ai .",
+    "start": "cd apps/dashboard && pnpm start",
+    "lint": "cd apps/dashboard && pnpm lint",
+    "type-check": "cd apps/dashboard && pnpm type-check",
+    "test": "cd apps/dashboard && pnpm test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

@@ -217,7 +217,7 @@ export default () => (
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 text-center text-slate-600 dark:text-slate-400 text-sm">
           <p>
             readable.ai — Parse AI responses into beautiful UI.{' '}
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600">
+            <a href="https://github.com/Txnishkk93/readable.ai" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600">
               View Source
             </a>
           </p>

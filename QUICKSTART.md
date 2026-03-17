@@ -1,52 +1,138 @@
 # readable.ai Quick Start
 
-Get readable.ai running locally in 2 minutes.
+Get the Next.js monorepo up and running in **5 minutes**.
 
 ## Prerequisites
 
-- Node.js 18+
-- pnpm (install: `npm install -g pnpm`)
+- **Node.js** >= 18 ([Download](https://nodejs.org/))
+- **pnpm** >= 9.0 (`npm install -g pnpm`)
 
 ## Installation
 
 ```bash
-# Clone the repo
-git clone https://github.com/your-org/readable-ai.git
+# Navigate to project
 cd readable-ai
 
-# Install dependencies
+# Install dependencies (includes Turbo, all packages, and apps)
 pnpm install
 ```
+
+**⏱️ Takes 1-2 minutes**
 
 ## Development
 
 ```bash
-# Start development mode for all packages
+# Start all packages in dev mode
 pnpm dev
 
-# The dashboard will be available at:
-# http://localhost:3000
+# Dashboard available at: http://localhost:3000
+# All packages in watch mode with hot reload
+```
 
-# Try the playground:
-# http://localhost:3000/playground
+**Press Ctrl+C to stop**
 
-# Try the embed configurator:
-# http://localhost:3000/embed
+### Alternative: Dashboard Only
+
+```bash
+pnpm dev:dashboard
+```
+
+Lighter weight if you only need the dashboard.
+
+## Building
+
+```bash
+# Build all packages (Turbo-optimized with caching)
+pnpm build
+
+# Start production build
+cd apps/dashboard
+pnpm start
 ```
 
 ## Project Structure
 
 ```
-readable-ai/
-├── packages/
-│   ├── core/           # Parser engine (types, parser, tokenizer, etc)
-│   ├── react/          # React components (renderers, hooks)
-│   └── embed/          # UMD bundle for script tag
+readable-ai/ (Next.js Turbo Monorepo)
 ├── apps/
-│   └── dashboard/      # Next.js playground & docs
-├── README.md           # Full documentation
-└── LAUNCH.md          # Pre-launch checklist
+│   └── dashboard/           # Next.js 16 app (port 3000)
+├── packages/
+│   ├── core/                # Parser engine (zero dependencies)
+│   ├── react/               # React components & renderers
+│   └── embed/               # UMD bundle for <script> tags
+├── components/              # Shared UI components (60+)
+├── hooks/                   # Shared React hooks
+├── lib/                     # Shared utilities
+├── turbo.json               # Monorepo orchestration
+├── pnpm-workspace.yaml      # Workspace definition
+└── MONOREPO.md              # Detailed architecture guide
 ```
+
+## Common Tasks
+
+```bash
+# Development
+pnpm dev                      # All packages
+pnpm dev:dashboard            # Dashboard only
+
+# Building & Production
+pnpm build                    # Build all packages
+turbo build --filter=@readable-ai/react  # Specific package
+
+# Code Quality
+pnpm lint                     # ESLint + Next.js rules
+pnpm type-check               # TypeScript checking
+
+# Workspace Info
+pnpm list --depth=0           # Installed packages
+turbo run build --graph       # Dependency graph
+```
+
+## Features
+
+🎨 **60+ UI Components** (Radix UI)  
+🌓 **Dark Mode Support** (next-themes)  
+⚡ **Fast Builds** (Turbo caching)  
+🔄 **Parallel Development** (All packages watch mode)  
+📦 **Monorepo Structure** (pnpm workspaces)  
+🎯 **Type Safe** (TypeScript strict mode)  
+🚀 **Next.js 16 App Router** (Bleeding edge)  
+
+## Documentation
+
+- **README.md** - Project overview
+- **MONOREPO.md** - Detailed monorepo guide
+- **NEXTJS_CONVERSION.md** - Conversion history
+- **LAUNCH.md** - Deployment checklist
+
+## Troubleshooting
+
+### Port 3000 in use?
+```bash
+pnpm dev -- -p 3001
+```
+
+### Dependencies issue?
+```bash
+rm -rf node_modules .turbo
+pnpm install
+```
+
+### Build fails?
+```bash
+pnpm build
+pnpm type-check
+```
+
+## That's it! 🎉
+
+```bash
+pnpm dev  # Start coding
+```
+
+Visit **http://localhost:3000** in your browser.
+
+For more details, check **MONOREPO.md** or **NEXTJS_CONVERSION.md**.
 
 ## Building
 

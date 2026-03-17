@@ -1,6 +1,6 @@
 /**
- * @readable-ai/core
- * Parser engine for converting LLM responses into structured data
+ * Core Parser Engine
+ * Converts LLM responses into structured data
  */
 
 export { parseAIResponse, createStreamingState, processStreamChunk } from './parser';

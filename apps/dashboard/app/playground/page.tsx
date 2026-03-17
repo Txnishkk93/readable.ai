@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Readable } from '@readable-ai/react';
-import type { ParsedResponse } from '@readable-ai/core';
+import { Readable } from '@/lib/react';
+import type { ParsedResponse } from '@/lib/core';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
 
 const EXAMPLE_RESPONSES = {
   analytics: 'Conversion rate increased 23% month-over-month. Traffic rose by 1200 users. Average page load time improved from 2.3s to 1.8s. The bounce rate decreased 15%. Revenue per user climbed to $42.50.',
@@ -30,58 +31,66 @@ export default function PlaygroundPage() {
   };
 
   const copyToClipboard = () => {
-    const config = {
-      response: input,
-      renderer,
-      theme,
-    };
-    navigator.clipboard.writeText(JSON.stringify(config, null, 2));
+    navigator.clipboard.writeText(JSON.stringify({ response: input, renderer, theme }, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+
+      {/* Nav */}
+      <nav className="h-12 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center px-6">
+        <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
+          <Link href="/" className="text-sm font-medium text-slate-900 dark:text-slate-50 tracking-tight">
+            readable.ai
+          </Link>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Playground</span>
+        </div>
+      </nav>
+
+      <div className="max-w-6xl mx-auto px-6 py-8">
+
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">
-            readable.ai Playground
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50 tracking-tight mb-1">
+            Playground
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Paste any AI response and see how it's parsed and rendered.
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Paste any AI response and see how it&apos;s parsed and rendered.
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Input Section */}
-          <Card className="h-fit">
-            <CardHeader>
-              <CardTitle>Input</CardTitle>
-              <CardDescription>Paste your LLM response</CardDescription>
+        {/* Main grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          {/* Input */}
+          <Card className="border-slate-200 dark:border-slate-800 h-fit">
+            <CardHeader className="pb-3 pt-5 px-5">
+              <CardTitle className="text-sm font-medium">Input</CardTitle>
+              <CardDescription className="text-xs">Paste your LLM response</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="px-5 pb-5 space-y-4">
               <Textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Paste AI response here..."
-                className="min-h-64 font-mono text-sm"
+                className="min-h-48 font-mono text-xs resize-none"
               />
 
-              {/* Quick Examples */}
-              <div className="space-y-2">
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  Quick Examples:
+              {/* Examples */}
+              <div>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 tracking-wide uppercase">
+                  Examples
                 </p>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="flex flex-wrap gap-2">
                   {Object.entries(EXAMPLE_RESPONSES).map(([key, value]) => (
                     <Button
                       key={key}
                       variant="outline"
                       size="sm"
                       onClick={() => setInput(value)}
-                      className="justify-start"
+                      className={`text-xs h-7 px-3 ${input === value ? 'bg-slate-100 dark:bg-slate-800' : ''}`}
                     >
                       {key.charAt(0).toUpperCase() + key.slice(1)}
                     </Button>
@@ -90,13 +99,13 @@ export default function PlaygroundPage() {
               </div>
 
               {/* Controls */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-2">
+                  <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1.5">
                     Renderer
                   </label>
                   <Select value={renderer} onValueChange={(v) => setRenderer(v as RendererType)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -108,11 +117,11 @@ export default function PlaygroundPage() {
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block mb-2">
+                  <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1.5">
                     Theme
                   </label>
                   <Select value={theme} onValueChange={(v) => setTheme(v as ThemeType)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -123,21 +132,26 @@ export default function PlaygroundPage() {
                 </div>
               </div>
 
-              <Button onClick={copyToClipboard} className="w-full">
+              <Button
+                onClick={copyToClipboard}
+                size="sm"
+                variant="outline"
+                className="w-full text-xs h-8"
+              >
                 {copied ? '✓ Copied' : 'Copy Config'}
               </Button>
             </CardContent>
           </Card>
 
-          {/* Output Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Output</CardTitle>
-              <CardDescription>Rendered response</CardDescription>
+          {/* Output */}
+          <Card className="border-slate-200 dark:border-slate-800">
+            <CardHeader className="pb-3 pt-5 px-5">
+              <CardTitle className="text-sm font-medium">Output</CardTitle>
+              <CardDescription className="text-xs">Rendered response</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-5 pb-5">
               <div
-                className={`p-6 rounded-lg border ${
+                className={`p-5 rounded-lg border ${
                   theme === 'dark'
                     ? 'bg-slate-950 border-slate-800'
                     : 'bg-white border-slate-200'
@@ -154,44 +168,36 @@ export default function PlaygroundPage() {
           </Card>
         </div>
 
-        {/* Parse Data Section */}
+        {/* Parsed Data */}
         {parsed && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Parsed Data</CardTitle>
-              <CardDescription>JSON representation of extracted data</CardDescription>
+          <Card className="mt-4 border-slate-200 dark:border-slate-800">
+            <CardHeader className="pb-3 pt-5 px-5">
+              <CardTitle className="text-sm font-medium">Parsed data</CardTitle>
+              <CardDescription className="text-xs">JSON representation of extracted data</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-5 pb-5">
               <Tabs defaultValue="metrics" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="metrics">
-                    Metrics ({parsed.metrics.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="insights">
-                    Insights ({parsed.insights.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="actions">
-                    Actions ({parsed.actions.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="all">Raw</TabsTrigger>
+                <TabsList className="h-8 gap-1 bg-slate-100 dark:bg-slate-800/50">
+                  {[
+                    { value: 'metrics', label: `Metrics (${parsed.metrics.length})` },
+                    { value: 'insights', label: `Insights (${parsed.insights.length})` },
+                    { value: 'actions', label: `Actions (${parsed.actions.length})` },
+                    { value: 'all', label: 'Raw' },
+                  ].map(({ value, label }) => (
+                    <TabsTrigger key={value} value={value} className="text-xs h-6 px-3">
+                      {label}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
-                <TabsContent value="metrics" className="mt-4">
-                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
-                    {JSON.stringify(parsed.metrics, null, 2)}
-                  </pre>
-                </TabsContent>
-                <TabsContent value="insights" className="mt-4">
-                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
-                    {JSON.stringify(parsed.insights, null, 2)}
-                  </pre>
-                </TabsContent>
-                <TabsContent value="actions" className="mt-4">
-                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
-                    {JSON.stringify(parsed.actions, null, 2)}
-                  </pre>
-                </TabsContent>
-                <TabsContent value="all" className="mt-4">
-                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-sm">
+                {(['metrics', 'insights', 'actions'] as const).map((key) => (
+                  <TabsContent key={key} value={key} className="mt-3">
+                    <pre className="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-auto max-h-72 text-xs leading-relaxed">
+                      {JSON.stringify(parsed[key], null, 2)}
+                    </pre>
+                  </TabsContent>
+                ))}
+                <TabsContent value="all" className="mt-3">
+                  <pre className="bg-slate-900 text-slate-300 p-4 rounded-lg overflow-auto max-h-72 text-xs leading-relaxed">
                     {JSON.stringify(parsed, null, 2)}
                   </pre>
                 </TabsContent>
