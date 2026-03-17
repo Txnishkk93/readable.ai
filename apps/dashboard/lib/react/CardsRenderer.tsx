@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/lib/react/hooks/useTheme';
 import type { RendererProps } from './types';
 
 export const CardsRenderer: React.FC<RendererProps> = ({ response, theme = 'dark', overrides = {} }) => {
