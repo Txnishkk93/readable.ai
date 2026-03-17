@@ -1,11 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-}
+  transpilePackages: ['@readable-ai/react', '@readable-ai/core'],
+};
 
-export default nextConfig
+export default nextConfig;

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import type { ReadableProps } from './types';
 import { CardsRenderer } from './CardsRenderer';
