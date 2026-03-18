@@ -26,7 +26,7 @@ export interface ThemeTokens {
   text_secondary: string;
 }
 
-const DARK_THEME: ThemeTokens = {
+export const DARK_THEME: ThemeTokens = {
   font_family_sans: 'Inter, system-ui, sans-serif',
   font_size_sm: '0.75rem',
   font_size_base: '0.875rem',
@@ -52,7 +52,7 @@ const DARK_THEME: ThemeTokens = {
   text_secondary: '#94a3b8',
 };
 
-const LIGHT_THEME: ThemeTokens = {
+export const LIGHT_THEME: ThemeTokens = {
   ...DARK_THEME,
   surface: '#ffffff',
   border: '#e2e8f0',

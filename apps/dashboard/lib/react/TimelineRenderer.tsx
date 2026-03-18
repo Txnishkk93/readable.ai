@@ -32,14 +32,14 @@ export const TimelineRenderer: React.FC<RendererProps> = ({ response, theme = 'd
       width: '12px',
       height: '12px',
       backgroundColor: tokens.primary,
-      border: `2px solid ${tokens.background}`,
+      border: `2px solid ${tokens.surface}`,
       borderRadius: '50%',
     } as React.CSSProperties,
     metricDot: {
       backgroundColor: tokens.accent,
     } as React.CSSProperties,
     actionDot: {
-      backgroundColor: tokens.success,
+      backgroundColor: tokens.accent,
     } as React.CSSProperties,
     content: {
       padding: tokens.spacing_md,
