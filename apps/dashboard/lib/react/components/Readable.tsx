@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { ReadableProps } from './types';
 import { CardsRenderer } from './CardsRenderer';
 import { StatsRenderer } from './StatsRenderer';
@@ -27,6 +27,12 @@ export const Readable: React.FC<ReadableProps> = ({
 }) => {
   const { result, error } = useReadable(response, parserConfig);
 
+  useEffect(() => {
+    if (result && onParse) {
+      onParse(result);
+    }
+  }, [result, onParse]);
+
   if (error) {
     return (
       <div style={{ color: '#ef4444', padding: '1rem', fontFamily: 'monospace' }}>
@@ -37,10 +43,6 @@ export const Readable: React.FC<ReadableProps> = ({
 
   if (!result) {
     return <div>Loading...</div>;
-  }
-
-  if (onParse) {
-    onParse(result);
   }
 
   const RendererComponent = RENDERERS[renderer] || RENDERERS.cards;
