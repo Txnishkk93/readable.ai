@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react';
+import { parseAIResponse } from '../core/parser';
 import type { ParsedResponse, ParserConfig } from '../core/types';
-
-export interface ReadableResult {
-    metrics: Array<{ label: string; value: string; unit?: string }>;
-    insights: string[];
-    actions: string[];
-    confidence: number;
-}
-
-export interface UseReadableOptions {
-    hint?: 'analytics' | 'conversational' | 'actionable';
-}
 
 export function useReadable(
   response: string | ParsedResponse,
@@ -25,7 +15,7 @@ export function useReadable(
       return;
     }
 
-    // Already a ParsedResponse object, use directly
+    // Already a ParsedResponse — use directly (e.g. from useAIVisualize)
     if (typeof response !== 'string') {
       setResult(response);
       setError(null);
@@ -38,19 +28,8 @@ export function useReadable(
     }
 
     try {
-      const parsed: ParsedResponse = {
-        raw: response,
-        metrics: [],
-        insights: [],
-        actions: [],
-        confidence: 0,
-        unparsed: [],
-        metadata: {
-          processedAt: new Date().toISOString(),
-          tokenCount: response.split(/\s+/).length,
-          parseMode: 'complete',
-        },
-      };
+      // Use your existing core parser
+      const parsed = parseAIResponse(response, config);
       setResult(parsed);
       setError(null);
     } catch (err) {

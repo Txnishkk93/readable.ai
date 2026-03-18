@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Dashboard",
+			"type": "shell",
+			"command": "pnpm",
+			"args": [
+				"build"
+			],
+			"group": "build"
+		}
+	]
+}

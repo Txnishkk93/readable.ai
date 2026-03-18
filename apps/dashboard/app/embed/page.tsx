@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Sparkles, Loader2, Zap } from 'lucide-react';
+import { useAIVisualize } from '@/lib/hooks/useAIVisualize';
 
 type RendererType = 'cards' | 'stats' | 'chat' | 'timeline';
 type ThemeType = 'dark' | 'light';
@@ -29,6 +30,8 @@ export default function EmbedPage() {
   const [email, setEmail] = useState('');
   const [copied, setCopied] = useState<string | null>(null);
 
+  const { result: aiResult, loading: aiLoading, error: aiError, analyze, reset } = useAIVisualize();
+
   const embedScript = `<div id="${config.containerId}"></div>
 <script src="https://cdn.readable.ai/readable.umd.js"><\/script>
 <script>
@@ -47,9 +50,7 @@ export default function EmbedPage() {
 </head>
 <body>
   <h1>AI Response Parser</h1>
-  
   ${embedScript}
-  
 </body>
 </html>`;
 
@@ -61,16 +62,29 @@ export default function EmbedPage() {
 
   const subscribeNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
-    // This would be connected to a backend API
-    console.log('Newsletter signup:', email);
-    alert('Thanks for your interest! We\'ll notify you when readable.ai Pro launches.');
+    alert("Thanks for your interest! We'll notify you when readable.ai Pro launches.");
     setEmail('');
   };
+
+  const handleAutoDetect = async () => {
+    if (!config.response.trim()) return;
+    reset();
+    await analyze(config.response);
+    // Apply suggested renderer after analyze
+    if (aiResult?.suggestedRenderer && (['cards', 'stats', 'chat', 'timeline'] as string[]).includes(aiResult.suggestedRenderer)) {
+      setConfig((c) => ({ ...c, renderer: aiResult.suggestedRenderer as RendererType }));
+    }
+  };
+
+  // Apply renderer from latest AI result
+  const detectedRenderer = aiResult?.suggestedRenderer;
+  const detectedType = aiResult?.inputType;
+  const detectedConfidence = aiResult?.confidence;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-50 mb-2">
             Embed Configurator
@@ -81,13 +95,15 @@ export default function EmbedPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Configuration Panel */}
+
+          {/* Config Panel */}
           <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle>Configure</CardTitle>
               <CardDescription>Customize your embed</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+
               <div>
                 <label className="text-sm font-medium block mb-2">Container ID</label>
                 <Input
@@ -98,11 +114,58 @@ export default function EmbedPage() {
               </div>
 
               <div>
+                <label className="text-sm font-medium block mb-2">Sample Response</label>
+                <Textarea
+                  value={config.response}
+                  onChange={(e) => { setConfig({ ...config, response: e.target.value }); reset(); }}
+                  placeholder="Paste your AI response or any data..."
+                  className="min-h-32 font-mono text-xs"
+                />
+
+                {/* AI Auto-detect */}
+                <Button
+                  onClick={handleAutoDetect}
+                  disabled={aiLoading || !config.response.trim()}
+                  variant="outline"
+                  size="sm"
+                  className="mt-2 w-full text-xs h-8 gap-1.5 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
+                >
+                  {aiLoading
+                    ? <><Loader2 className="w-3 h-3 animate-spin" />Detecting...</>
+                    : <><Sparkles className="w-3 h-3" />AI Auto-detect Renderer</>}
+                </Button>
+
+                {/* Detection result */}
+                {aiResult && detectedType && (
+                  <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                    <Zap className="w-3 h-3 text-emerald-500" />
+                    <span className="text-xs text-slate-500">Detected:</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium">
+                      {detectedType}
+                    </span>
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-medium">
+                      → {detectedRenderer}
+                    </span>
+                    {detectedConfidence !== undefined && (
+                      <span className="text-xs text-slate-400">
+                        ({Math.round(detectedConfidence * 100)}%)
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {aiError && (
+                  <p className="mt-2 text-xs text-red-500">{aiError}</p>
+                )}
+              </div>
+
+              <div>
                 <label className="text-sm font-medium block mb-2">Renderer</label>
-                <Select value={config.renderer} onValueChange={(v) => setConfig({ ...config, renderer: v as RendererType })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <Select
+                  value={config.renderer}
+                  onValueChange={(v) => setConfig({ ...config, renderer: v as RendererType })}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="cards">Cards</SelectItem>
                     <SelectItem value="stats">Stats</SelectItem>
@@ -114,10 +177,11 @@ export default function EmbedPage() {
 
               <div>
                 <label className="text-sm font-medium block mb-2">Theme</label>
-                <Select value={config.theme} onValueChange={(v) => setConfig({ ...config, theme: v as ThemeType })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                <Select
+                  value={config.theme}
+                  onValueChange={(v) => setConfig({ ...config, theme: v as ThemeType })}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="dark">Dark</SelectItem>
                     <SelectItem value="light">Light</SelectItem>
@@ -125,17 +189,7 @@ export default function EmbedPage() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium block mb-2">Sample Response</label>
-                <Textarea
-                  value={config.response}
-                  onChange={(e) => setConfig({ ...config, response: e.target.value })}
-                  placeholder="Paste your AI response..."
-                  className="min-h-32"
-                />
-              </div>
-
-              <div className="border-t pt-4 mt-4">
+              <div className="border-t pt-4">
                 <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                   Get notified when Pro launches with custom theming and advanced features.
                 </p>
@@ -169,99 +223,58 @@ export default function EmbedPage() {
                   <TabsTrigger value="react">React</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="script" className="mt-4">
-                  <div className="space-y-2">
-                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
-                      {embedScript}
-                    </pre>
-                    <Button
-                      onClick={() => copyToClipboard(embedScript, 'script')}
-                      className="w-full"
-                    >
-                      {copied === 'script' ? (
-                        <>
-                          <Check className="w-4 h-4 mr-2" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy Script
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                <TabsContent value="script" className="mt-4 space-y-2">
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
+                    {embedScript}
+                  </pre>
+                  <Button onClick={() => copyToClipboard(embedScript, 'script')} className="w-full">
+                    {copied === 'script' ? <><Check className="w-4 h-4 mr-2" />Copied!</> : <><Copy className="w-4 h-4 mr-2" />Copy Script</>}
+                  </Button>
                 </TabsContent>
 
-                <TabsContent value="html" className="mt-4">
-                  <div className="space-y-2">
-                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
-                      {htmlExample}
-                    </pre>
-                    <Button
-                      onClick={() => copyToClipboard(htmlExample, 'html')}
-                      className="w-full"
-                    >
-                      {copied === 'html' ? (
-                        <>
-                          <Check className="w-4 h-4 mr-2" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy HTML
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                <TabsContent value="html" className="mt-4 space-y-2">
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
+                    {htmlExample}
+                  </pre>
+                  <Button onClick={() => copyToClipboard(htmlExample, 'html')} className="w-full">
+                    {copied === 'html' ? <><Check className="w-4 h-4 mr-2" />Copied!</> : <><Copy className="w-4 h-4 mr-2" />Copy HTML</>}
+                  </Button>
                 </TabsContent>
 
-                <TabsContent value="react" className="mt-4">
-                  <div className="space-y-2">
-                    <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
+                <TabsContent value="react" className="mt-4 space-y-2">
+                  <pre className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto max-h-96 text-xs leading-loose">
 {`import { Readable } from '@readable-ai/react';
 
 export default function MyComponent() {
   return (
     <Readable
-      response="${config.response}"
+      response="${config.response.slice(0, 60)}${config.response.length > 60 ? '...' : ''}"
       renderer="${config.renderer}"
       theme="${config.theme}"
     />
   );
 }`}
-                    </pre>
-                    <Button
-                      onClick={() => copyToClipboard(`import { Readable } from '@readable-ai/react';\n\nexport default function MyComponent() {\n  return (\n    <Readable\n      response="${config.response}"\n      renderer="${config.renderer}"\n      theme="${config.theme}"\n    />\n  );\n}`, 'react')}
-                      className="w-full"
-                    >
-                      {copied === 'react' ? (
-                        <>
-                          <Check className="w-4 h-4 mr-2" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy React Code
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                  </pre>
+                  <Button
+                    onClick={() => copyToClipboard(
+                      `import { Readable } from '@readable-ai/react';\n\nexport default function MyComponent() {\n  return (\n    <Readable\n      response="${config.response}"\n      renderer="${config.renderer}"\n      theme="${config.theme}"\n    />\n  );\n}`,
+                      'react'
+                    )}
+                    className="w-full"
+                  >
+                    {copied === 'react' ? <><Check className="w-4 h-4 mr-2" />Copied!</> : <><Copy className="w-4 h-4 mr-2" />Copy React Code</>}
+                  </Button>
                 </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
         </div>
 
-        {/* Features Section */}
+        {/* Features */}
         <Card className="mt-6">
-          <CardHeader>
-            <CardTitle>Features</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Features</CardTitle></CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-slate-50 mb-2">Zero Setup</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -278,6 +291,15 @@ export default function MyComponent() {
                 <h3 className="font-semibold text-slate-900 dark:text-slate-50 mb-2">Fully Themed</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Dark and light themes. Pro tier adds custom CSS variable theming.
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900 dark:text-slate-50 mb-2 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-indigo-500" />
+                  AI Auto-detect
+                </h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Paste CSV, JSON, or prose — AI picks the best renderer automatically via Groq.
                 </p>
               </div>
             </div>

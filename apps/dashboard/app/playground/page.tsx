@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Readable } from '@/lib/react';
 import type { ParsedResponse } from '@/lib/core';
 import { useAIVisualize } from '@/lib/hooks/useAIVisualize';
@@ -38,20 +38,10 @@ export default function PlaygroundPage() {
   const [manualParsed, setManualParsed] = useState<ParsedResponse | null>(null);
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<ModeType>('manual');
-  const parsedRef = useRef<ParsedResponse | null>(null);
 
   const { result: aiResult, loading: aiLoading, error: aiError, analyze, reset } = useAIVisualize();
 
-  useEffect(() => {
-    if (parsedRef.current) {
-      setManualParsed(parsedRef.current);
-      parsedRef.current = null;
-    }
-  });
-
-  const handleParse = (response: ParsedResponse) => {
-    parsedRef.current = response;
-  };
+  const handleParse = (response: ParsedResponse) => setManualParsed(response);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify({ response: input, renderer, theme }, null, 2));
