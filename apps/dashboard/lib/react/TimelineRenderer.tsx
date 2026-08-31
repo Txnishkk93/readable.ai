@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from './hooks/useTheme';
 import type { RendererProps } from './types';
 
 export const TimelineRenderer: React.FC<RendererProps> = ({ response, theme = 'dark', overrides = {} }) => {
@@ -66,13 +66,6 @@ export const TimelineRenderer: React.FC<RendererProps> = ({ response, theme = 'd
       marginBottom: tokens.spacing_sm,
     } as React.CSSProperties,
   };
-
-  // ❌ REMOVED - this was declared but never used
-  // const allItems = [
-  //   ...response.metrics.map((m, i) => ({ type: 'metric' as const, data: m, idx: i })),
-  //   ...response.insights.map((i, idx) => ({ type: 'insight' as const, data: i, idx })),
-  //   ...response.actions.map((a, idx) => ({ type: 'action' as const, data: a, idx })),
-  // ];
 
   return (
     <div style={styles.container}>

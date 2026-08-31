@@ -6,6 +6,7 @@ import { StatsRenderer } from './StatsRenderer';
 import { ChatRenderer } from './ChatRenderer';
 import { TimelineRenderer } from './TimelineRenderer';
 import { useReadable } from '../hooks/useReadable';
+import { useAIVisualize } from '@/lib/hooks/useAIVisualize';
 
 const RENDERERS = {
   cards: CardsRenderer,
@@ -15,23 +16,39 @@ const RENDERERS = {
 };
 
 /**
- * Main Readable component - parses and renders LLM responses
+ * Default mode is fast: deterministic parser, zero dependencies, no API key needed.
+ * Smart mode is opt-in and requires a server-side backend route that proxies Groq.
  */
 export const Readable: React.FC<ReadableProps> = ({
   response,
   renderer = 'cards',
   theme = 'dark',
+  mode = 'fast',
   parserConfig,
   overrides,
   onParse,
 }) => {
-  const { result, error } = useReadable(response, parserConfig);
+  const fastResult = useReadable(response, parserConfig);
+  const smart = useAIVisualize();
 
   useEffect(() => {
+    if (mode === 'smart' && typeof response === 'string') {
+      smart.analyze(response, parserConfig);
+      return;
+    }
+
+    smart.reset();
+  }, [mode, response, parserConfig, smart]);
+
+  useEffect(() => {
+    const result = mode === 'smart' ? smart.result?.parsed : fastResult.result;
     if (result && onParse) {
       onParse(result);
     }
-  }, [result, onParse]);
+  }, [fastResult.result, mode, onParse, smart.result]);
+
+  const result = mode === 'smart' ? smart.result?.parsed ?? fastResult.result : fastResult.result;
+  const error = mode === 'smart' ? smart.error ?? fastResult.error : fastResult.error;
 
   if (error) {
     return (
@@ -41,7 +58,7 @@ export const Readable: React.FC<ReadableProps> = ({
     );
   }
 
-  if (!result) {
+  if (!result || (mode === 'smart' && smart.loading)) {
     return <div>Loading...</div>;
   }
 

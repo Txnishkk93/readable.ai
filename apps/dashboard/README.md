@@ -80,13 +80,15 @@ pnpm lint                   # ESLint & Next.js lint
 ```
 
 ### `packages/core`
-Zero-dependency TypeScript parser engine.
+Zero-dependency TypeScript parser engine. This is the default `fast` path.
 
 **Exports:**
-- `parseAIResponse()` - Parse text into structured data
+- `parseAIResponse()` - Parse text into structured data without any external API
 - `tokenize()` - Create tokens from text
 - `classifyIntent()` - Identify intent categories
 - `scoreConfidence()` - Get confidence metrics
+
+> Smart mode is separate: it calls the backend endpoint `/api/analyze` and is only used when you intentionally opt in via `<Readable mode="smart" />` and a server-side Groq key.
 
 **Commands:**
 ```bash
@@ -99,11 +101,11 @@ pnpm type-check  # Type checking
 React component library with multiple renderers.
 
 **Exports:**
-- `<Readable />` - Main component with auto-detection
+- `<Readable />` - Main component with explicit `mode="fast" | "smart"`
 - `<CardsRenderer />` - Grid-based metrics renderer
 - `<StatsRenderer />` - Analytics-focused renderer
-- `<ChatRenderer />` - Conversation bubbles (coming soon)
-- `<TimelineRenderer />` - Sequential timeline (coming soon)
+- `<ChatRenderer />` - Conversation bubble renderer
+- `<TimelineRenderer />` - Sequential timeline renderer
 
 **Theming:**
 - Built-in dark/light themes
@@ -224,7 +226,7 @@ console.log(data.metrics, data.actions, data.insights);
 ### Parser Engine (`core`)
 - 📊 **Metrics Detection**: 23%, 1200 users, $45K, etc.
 - 🎯 **Intent Classification**: Actions, insights, questions
-- 🎲 **Confidence Scoring**: 80%+ accuracy with graceful fallback
+- 🎲 **Confidence Scoring**: deterministic confidence scores with graceful fallback for ambiguous output
 - 🔄 **Streaming Support**: Incremental parsing for real-time UI
 
 ### React Library (`react`)
@@ -331,9 +333,9 @@ UMD bundle for any website.
 
 - [x] Core parser engine with metric detection
 - [x] CardsRenderer and StatsRenderer
+- [x] ChatRenderer and TimelineRenderer
 - [x] React hooks and components
 - [x] UMD embed bundle
-- [ ] ChatRenderer and TimelineRenderer
 - [ ] ML-powered classifier improvements
 - [ ] Custom renderer SDK
 - [ ] White-label theming

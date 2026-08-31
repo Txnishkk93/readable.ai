@@ -7,7 +7,7 @@ import type {
   StreamingState,
 } from './types';
 import { tokenizeText } from './tokenizer';
-import { detectMetrics } from './metric-detector';
+import { detectMetrics, extractMetrics } from './metric-detector';
 import { classifyIntent } from './intent-classifier';
 
 const DEFAULT_CONFIG: Required<ParserConfig> = {
@@ -34,10 +34,9 @@ export function parseAIResponse(text: string, config?: ParserConfig): ParsedResp
 
   // Process each sentence
   for (const sentence of sentences) {
-    // Try to extract metrics
-    const metricMatch = detectMetrics(sentence, mergedConfig.hint);
-    if (metricMatch && metricMatch.confidence >= mergedConfig.confidenceThreshold!) {
-      metrics.push(metricMatch);
+    const metricMatches = extractMetrics(sentence, mergedConfig.hint);
+    if (metricMatches.length > 0) {
+      metrics.push(...metricMatches.filter((metric) => metric.confidence >= mergedConfig.confidenceThreshold!));
       continue;
     }
 
@@ -136,9 +135,11 @@ export function processStreamChunk(
 
   // Process completed sentences
   for (const sentence of completedSentences) {
-    const metricMatch = detectMetrics(sentence, mergedConfig.hint);
-    if (metricMatch && metricMatch.confidence >= mergedConfig.confidenceThreshold!) {
-      state.parsedSoFar.metrics!.push(metricMatch);
+    const metricMatches = extractMetrics(sentence, mergedConfig.hint);
+    if (metricMatches.length > 0) {
+      state.parsedSoFar.metrics!.push(
+        ...metricMatches.filter((metric) => metric.confidence >= mergedConfig.confidenceThreshold!)
+      );
     } else {
       const intent = classifyIntent(sentence);
       if (intent.type === 'action' && intent.confidence >= mergedConfig.confidenceThreshold!) {

@@ -4,13 +4,13 @@
   "private": true,
   "packageManager": "pnpm@10.28.2",
   "scripts": {
-    "dev": "cd apps/dashboard && pnpm dev",
-    "build": "cd apps/dashboard && pnpm build",
+    "dev": "pnpm --dir apps/dashboard run dev",
+    "build": "pnpm --dir apps/dashboard run build",
     "build:docker": "docker buildx build -t readable-ai .",
-    "start": "cd apps/dashboard && pnpm start",
-    "lint": "cd apps/dashboard && pnpm lint",
-    "type-check": "cd apps/dashboard && pnpm type-check",
-    "test": "cd apps/dashboard && pnpm test"
+    "start": "pnpm --dir apps/dashboard run start",
+    "lint": "pnpm --dir apps/dashboard run lint",
+    "type-check": "pnpm --dir apps/dashboard run type-check",
+    "test": "pnpm --dir apps/dashboard run test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

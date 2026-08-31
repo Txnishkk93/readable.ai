@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, type ThemeType } from '../hooks/useTheme';
+import { useTheme } from './hooks/useTheme';
 import type { RendererProps } from './types';
 
 export const ChatRenderer: React.FC<RendererProps> = ({ response, theme = 'dark', overrides = {} }) => {

@@ -219,7 +219,7 @@ export const DUMMY_ABOUT_TIMELINE = [
   {
     date: 'Mar 2026',
     title: 'The insight',
-    body: "You don't need 100% parsing accuracy. You need 80% accuracy plus graceful fallback. That insight made the parser feel buildable — not impossible.",
+    body: "A strong baseline parser needs graceful fallback for edge cases, not a false guarantee of universal accuracy. That insight made the parser feel buildable — not impossible.",
   },
   {
     date: 'Apr 2026',

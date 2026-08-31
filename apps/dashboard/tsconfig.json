@@ -53,7 +53,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-, "lib/embed"  ],
+  ],
   "exclude": [
     "node_modules"
   ]

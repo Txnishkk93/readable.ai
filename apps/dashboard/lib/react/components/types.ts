@@ -14,6 +14,7 @@ export interface ReadableProps {
   response: string | ParsedResponse;
   renderer?: RendererType;
   theme?: ThemeType;
+  mode?: 'fast' | 'smart';
   parserConfig?: ParserConfig;
   overrides?: Record<string, string>;
   onParse?: (response: ParsedResponse) => void;

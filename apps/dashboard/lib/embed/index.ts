@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Readable } from '@readable-ai/react';
-import type { ReadableProps } from '@readable-ai/react';
+import { Readable } from '@/lib/react';
+import type { ReadableProps } from '@/lib/react';
 
 // Export for potential React environments that load this
 export { Readable };

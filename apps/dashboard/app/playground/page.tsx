@@ -111,14 +111,11 @@ export default function PlaygroundPage() {
             <Sparkles className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-white mb-0.5">
-                Powered by Groq · Llama 3.3 70B
+                Smart mode · powered by Groq
               </p>
               <p className="text-sm text-slate-400">
                 Paste CSV, JSON, prose, or bullet points — AI picks the best renderer automatically.
-                Requires{' '}
-                <code className="bg-slate-700 text-slate-200 px-1.5 py-0.5 rounded font-mono text-xs">
-                  NEXT_PUBLIC_GROQ_API_KEY
-                </code>
+                This is an opt-in smart mode that requires a server-side Groq key configured in the app backend.
               </p>
             </div>
           </div>
